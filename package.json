@@ -1,12 +1,12 @@
 {
   "name": "ecommerce-api",
   "version": "0.1.0",
-  "main": "src/app.ts",
+  "main": "src/server.ts",
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean",
-    "dev": "npx nodemon src/app.ts",
-    "start": "node dist/app.js"
+    "dev": "npx nodemon src/server.ts",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,8 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "winston": "^3.14.2"
   }
 }
