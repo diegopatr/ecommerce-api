@@ -1,21 +1,22 @@
 import {Request, Response} from 'express';
 
 import ProductRepository from "../repositories/product-repository";
+import ProductRepositorySql from "../repositories/product-repository-sql";
 
 export class ProductController {
     private productRepository: ProductRepository;
 
     constructor() {
-        this.productRepository = new ProductRepository();
+        this.productRepository = new ProductRepositorySql();
     }
 
-    getAll = (req: Request, res: Response): void => {
-        const products = this.productRepository.getAll();
+    getAll = async (req: Request, res: Response): Promise<void> => {
+        const products = await this.productRepository.getAll();
         res.status(200).json(products);
     };
 
-    getById = (req: Request, res: Response): void => {
-        const product = this.productRepository.getById(parseInt(req.params.id));
+    getById = async (req: Request, res: Response): Promise<void> => {
+        const product = await this.productRepository.getById(parseInt(req.params.id));
         if (!product) {
             res.status(404).send('Product not found');
         } else {
@@ -23,13 +24,13 @@ export class ProductController {
         }
     };
 
-    create = (req: Request, res: Response): void => {
-        const newProduct = this.productRepository.create(req.body);
+    create = async (req: Request, res: Response): Promise<void> => {
+        const newProduct = await this.productRepository.create(req.body);
         res.status(201).json(newProduct);
     };
 
-    replace = (req: Request, res: Response): void => {
-        const updatedProduct = this.productRepository.replace(parseInt(req.params.id), req.body);
+    replace = async (req: Request, res: Response): Promise<void> => {
+        const updatedProduct = await this.productRepository.replace(parseInt(req.params.id), req.body);
         if (!updatedProduct) {
             // According to the HTTP specification (RFC 9110), the PUT method
             // is defined to create or replace the resource at the target URI
@@ -45,8 +46,8 @@ export class ProductController {
         }
     };
 
-    update = (req: Request, res: Response): void => {
-        const updatedProduct = this.productRepository.update(parseInt(req.params.id), req.body);
+    update = async (req: Request, res: Response): Promise<void> => {
+        const updatedProduct = await this.productRepository.update(parseInt(req.params.id), req.body);
         if (!updatedProduct) {
             res.status(404).send('Product not found');
         } else {
@@ -54,8 +55,8 @@ export class ProductController {
         }
     };
 
-    delete = (req: Request, res: Response): void => {
-        const success = this.productRepository.delete(parseInt(req.params.id));
+    delete = async (req: Request, res: Response): Promise<void> => {
+        const success = await this.productRepository.delete(parseInt(req.params.id));
         if (!success) {
             res.status(404).send('Product not found');
         } else {
