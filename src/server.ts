@@ -1,9 +1,8 @@
 import dotenv from 'dotenv';
+dotenv.config();
+
 import app from './app';
 import logger from './utils/logger';
-
-// Load environment variables from .env file
-dotenv.config();
 
 const port: number = parseInt(process.env.PORT || '3000', 10);
 
