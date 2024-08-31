@@ -1,6 +1,6 @@
-import Product from "../models/product-model";
-import database from "../../../config/database";
-import ProductRepository from "./product-repository";
+import database from '../../../config/database';
+import Product from '../models/product-model';
+import ProductRepository from './product-repository';
 
 class ProductRepositorySql implements ProductRepository {
     async getAll(): Promise<Product[]> {

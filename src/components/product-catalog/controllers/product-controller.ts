@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
 
-import ProductRepository from "../repositories/product-repository";
-import ProductRepositorySql from "../repositories/product-repository-sql";
+import ProductRepository from '../repositories/product-repository';
+import ProductRepositorySql from '../repositories/product-repository-sql';
 
 export class ProductController {
     private productRepository: ProductRepository;

@@ -1,5 +1,5 @@
-import Product from "../models/product-model";
-import ProductRepository from "./product-repository";
+import Product from '../models/product-model';
+import ProductRepository from './product-repository';
 
 class ProductRepositoryMemory implements ProductRepository {
     private static products: Product[] = [
