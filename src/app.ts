@@ -6,7 +6,7 @@ const app = express();
 app.use(json());
 
 app.get('/', (req: Request, res: Response) => {
-    res.send('ecommerce api - v0.1.0');
+    res.send('ecommerce api');
 });
 
 /**
