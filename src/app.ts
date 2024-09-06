@@ -1,6 +1,4 @@
 import express, {json, Request, Response} from 'express';
-import 'reflect-metadata';
-
 import productRoutes from './components/product-catalog/routes/product-routes';
 import errorHandler from './middlewares/error-handler';
 

@@ -1,15 +1,15 @@
-import Product from '../models/product-model';
+import Product from '../entities/product-entity';
 
 interface ProductRepository {
     getAll(): Promise<Product[]>;
 
     getById(id: number): Promise<Product | undefined>;
 
-    create(product: Omit<Product, 'product_id'>): Promise<Product>;
+    create(product: Omit<Product, 'id'>): Promise<Product>;
 
-    replace(id: number, product: Omit<Product, 'product_id'>): Promise<Product | undefined>;
+    replace(id: number, product: Omit<Product, 'id'>): Promise<Product | undefined>;
 
-    update(id: number, product: Partial<Omit<Product, 'product_id'>>): Promise<Product | undefined>;
+    update(id: number, product: Partial<Omit<Product, 'id'>>): Promise<Product | undefined>;
 
     delete(id: number): Promise<boolean>;
 }

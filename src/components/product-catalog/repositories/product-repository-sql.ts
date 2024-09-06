@@ -1,11 +1,16 @@
 import database from '../../../config/database';
-import Product from '../models/product-model';
+import Product from '../entities/product-entity';
 import ProductRepository from './product-repository';
 
 class ProductRepositorySql implements ProductRepository {
     async getAll(): Promise<Product[]> {
         const result = await database.query('SELECT * FROM product');
-        return result.rows;
+        return result.rows.map(row => ({
+            id: row.product_id,
+            name: row.product_name,
+            description: row.product_description,
+            price: row.product_price
+        }));
     }
 
     async getById(id: number): Promise<Product | undefined> {
@@ -13,26 +18,44 @@ class ProductRepositorySql implements ProductRepository {
         if (result.rows.length === 0) {
             return undefined;
         }
-        return result.rows[0];
+        const row = result.rows[0];
+        return {
+            id: row.product_id,
+            name: row.product_name,
+            description: row.product_description,
+            price: row.product_price
+        };
     }
 
-    async create(product: Omit<Product, 'product_id'>): Promise<Product> {
+    async create(product: Omit<Product, 'id'>): Promise<Product> {
         const result = await database.query(
-            'INSERT INTO product (product_name, product_description, product_price, category_id, brand_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [product.product_name, product.product_description, product.product_price, product.category_id, product.brand_id]
+            'INSERT INTO product (product_name, product_description, product_price) VALUES ($1, $2, $3) RETURNING *',
+            [product.name, product.description, product.price]
         );
-        return result.rows[0];
+        const row = result.rows[0];
+        return {
+            id: row.product_id,
+            name: row.product_name,
+            description: row.product_description,
+            price: row.product_price
+        };
     }
 
     async replace(id: number, product: Omit<Product, 'product_id'>): Promise<Product | undefined> {
         const result = await database.query(
-            'UPDATE product SET product_name = $1, product_description = $2, product_price = $3, category_id = $4, brand_id = $5 WHERE product_id = $6 RETURNING *',
-            [product.product_name, product.product_description, product.product_price, product.category_id, product.brand_id, id]
+            'UPDATE product SET product_name = $1, product_description = $2, product_price = $3 WHERE product_id = $4 RETURNING *',
+            [product.name, product.description, product.price, id]
         );
-        return result.rows[0];
+        const row = result.rows[0];
+        return {
+            id: row.product_id,
+            name: row.product_name,
+            description: row.product_description,
+            price: row.product_price
+        };
     }
 
-    async update(id: number, product: Partial<Omit<Product, 'product_id'>>): Promise<Product | undefined> {
+    async update(id: number, product: Partial<Omit<Product, 'id'>>): Promise<Product | undefined> {
         const fields: string[] = [];
         const values = [];
         let query = 'UPDATE product SET ';
@@ -46,7 +69,13 @@ class ProductRepositorySql implements ProductRepository {
         values.push(id);
 
         const result = await database.query(query, values);
-        return result.rows[0];
+        const row = result.rows[0];
+        return {
+            id: row.product_id,
+            name: row.product_name,
+            description: row.product_description,
+            price: row.product_price
+        };
     }
 
     async delete(id: number): Promise<boolean> {

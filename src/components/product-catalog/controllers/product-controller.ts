@@ -1,13 +1,14 @@
 import {Request, Response} from 'express';
 
 import ProductRepository from '../repositories/product-repository';
-import ProductRepositorySql from '../repositories/product-repository-sql';
+import ProductRepositoryTypeorm from "../repositories/product-repository-typeorm";
+import {datasource} from "../../../config/datasource";
 
 export class ProductController {
     private productRepository: ProductRepository;
 
     constructor() {
-        this.productRepository = new ProductRepositorySql();
+        this.productRepository = new ProductRepositoryTypeorm(datasource);
     }
 
     getAll = async (req: Request, res: Response): Promise<void> => {

@@ -15,11 +15,9 @@ POST localhost:3000/products
 Content-Type: application/json
 
 {
-  "product_name": "New Smartphone Gamma",
-  "product_description": "Latest model of Smartphone Gamma",
-  "product_price": "1999.99",
-  "category_id": 3,
-  "brand_id": 1
+  "name": "New Smartphone Gamma",
+  "description": "Latest model of Smartphone Gamma",
+  "price": "1999.99"
 }
 
 ###
@@ -29,8 +27,8 @@ PUT localhost:3000/products/1
 Content-Type: application/json
 
 {
-  "product_name": "Updated Product",
-  "product_price": 450
+  "name": "Updated Product",
+  "price": 450
 }
 
 ###
@@ -40,7 +38,7 @@ PATCH localhost:3000/products/1
 Content-Type: application/json
 
 {
-  "product_price": 500
+  "price": 500
 }
 
 ###

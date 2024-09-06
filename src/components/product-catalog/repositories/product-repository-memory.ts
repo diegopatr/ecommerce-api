@@ -1,31 +1,25 @@
-import Product from '../models/product-model';
+import Product from '../entities/product-entity';
 import ProductRepository from './product-repository';
 
 class ProductRepositoryMemory implements ProductRepository {
     private static products: Product[] = [
         {
-            product_id: 1,
-            product_name: 'Smartphone X',
-            product_description: 'Latest model of Smartphone X',
-            product_price: 999.99,
-            category_id: 3,
-            brand_id: 1
+            id: 1,
+            name: 'Smartphone X',
+            description: 'Latest model of Smartphone X',
+            price: 999.99,
         },
         {
-            product_id: 2,
-            product_name: 'Laptop Y',
-            product_description: 'High performance Laptop Y',
-            product_price: 1299.99,
-            category_id: 1,
-            brand_id: 2
+            id: 2,
+            name: 'Laptop Y',
+            description: 'High performance Laptop Y',
+            price: 1299.99,
         },
         {
-            product_id: 3,
-            product_name: 'Washing Machine Z',
-            product_description: 'Efficient Washing Machine Z',
-            product_price: 499.99,
-            category_id: 2,
-            brand_id: 3
+            id: 3,
+            name: 'Washing Machine Z',
+            description: 'Efficient Washing Machine Z',
+            price: 499.99,
         }
     ];
 
@@ -36,38 +30,38 @@ class ProductRepositoryMemory implements ProductRepository {
     }
 
     async getById(id: number): Promise<Product | undefined> {
-        return ProductRepositoryMemory.products.find(product => product.product_id === id);
+        return ProductRepositoryMemory.products.find(product => product.id === id);
     }
 
     async create(product: Omit<Product, 'product_id'>): Promise<Product> {
-        const newProduct: Product = {...product, product_id: this.nextId++};
+        const newProduct: Product = {...product, id: this.nextId++};
         ProductRepositoryMemory.products.push(newProduct);
         return newProduct;
     }
 
-    async replace(id: number, product: Omit<Product, 'product_id'>): Promise<Product | undefined> {
-        const index = ProductRepositoryMemory.products.findIndex(p => p.product_id === id);
+    async replace(id: number, product: Omit<Product, 'id'>): Promise<Product | undefined> {
+        const index = ProductRepositoryMemory.products.findIndex(p => p.id === id);
         if (index === -1) {
             return undefined;
         }
-        const updatedProduct: Product = {...product, product_id: id};
+        const updatedProduct: Product = {...product, id: id};
         ProductRepositoryMemory.products[index] = updatedProduct;
         return updatedProduct;
     }
 
-    async update(id: number, product: Partial<Omit<Product, 'product_id'>>): Promise<Product | undefined> {
-        const index = ProductRepositoryMemory.products.findIndex(p => p.product_id === id);
+    async update(id: number, product: Partial<Omit<Product, 'id'>>): Promise<Product | undefined> {
+        const index = ProductRepositoryMemory.products.findIndex(p => p.id === id);
         if (index === -1) {
             return undefined;
         }
         const foundProduct = ProductRepositoryMemory.products[index];
-        const updatedProduct: Product = {...foundProduct, ...product, product_id: id};
+        const updatedProduct: Product = {...foundProduct, ...product, id: id};
         ProductRepositoryMemory.products[index] = updatedProduct;
         return updatedProduct;
     }
 
     async delete(id: number): Promise<boolean> {
-        const index = ProductRepositoryMemory.products.findIndex(p => p.product_id === id);
+        const index = ProductRepositoryMemory.products.findIndex(p => p.id === id);
         if (index === -1) {
             return false;
         }
