@@ -1,23 +1,22 @@
 import {Request, Response} from 'express';
-
-import ProductRepository from '../repositories/product-repository';
-import ProductRepositoryTypeorm from "../repositories/product-repository-typeorm";
+import {Repository} from 'typeorm';
+import ProductEntity from "../entities/product-entity";
 import {datasource} from "../../../config/datasource";
 
 export class ProductController {
-    private productRepository: ProductRepository;
+    private productRepository: Repository<ProductEntity>;
 
     constructor() {
-        this.productRepository = new ProductRepositoryTypeorm(datasource);
+        this.productRepository = datasource.getRepository(ProductEntity);
     }
 
     getAll = async (req: Request, res: Response): Promise<void> => {
-        const products = await this.productRepository.getAll();
+        const products = await this.productRepository.find();
         res.status(200).json(products);
     };
 
     getById = async (req: Request, res: Response): Promise<void> => {
-        const product = await this.productRepository.getById(parseInt(req.params.id));
+        const product = await this.productRepository.findOneBy({id: parseInt(req.params.id)});
         if (!product) {
             res.status(404).send('Product not found');
         } else {
@@ -26,13 +25,15 @@ export class ProductController {
     };
 
     create = async (req: Request, res: Response): Promise<void> => {
-        const newProduct = await this.productRepository.create(req.body);
+        const newProduct = this.productRepository.create(req.body);
         res.status(201).json(newProduct);
     };
 
     replace = async (req: Request, res: Response): Promise<void> => {
-        const updatedProduct = await this.productRepository.replace(parseInt(req.params.id), req.body);
-        if (!updatedProduct) {
+        const productId = parseInt(req.params.id);
+        const existingProduct = await this.productRepository.findOneBy({ id: productId });
+
+        if (!existingProduct) {
             // According to the HTTP specification (RFC 9110), the PUT method
             // is defined to create or replace the resource at the target URI
             // with the request payload. However, it is generally expected to
@@ -43,22 +44,28 @@ export class ProductController {
             // resource to be updated does not exist.
             res.status(404).send('Product not found');
         } else {
+            const updatedProduct = this.productRepository.create({ ...existingProduct, ...req.body });
+            await this.productRepository.save(updatedProduct);
             res.status(200).json(updatedProduct);
         }
     };
 
     update = async (req: Request, res: Response): Promise<void> => {
-        const updatedProduct = await this.productRepository.update(parseInt(req.params.id), req.body);
-        if (!updatedProduct) {
+        const productId = parseInt(req.params.id);
+        const partialUpdate = req.body;
+
+        const result = await this.productRepository.update(productId, partialUpdate);
+        if (result.affected === 0) {
             res.status(404).send('Product not found');
         } else {
+            const updatedProduct = await this.productRepository.findOneBy({ id: productId });
             res.status(200).json(updatedProduct);
         }
     };
 
     delete = async (req: Request, res: Response): Promise<void> => {
-        const success = await this.productRepository.delete(parseInt(req.params.id));
-        if (!success) {
+        const result = await this.productRepository.delete(parseInt(req.params.id));
+        if (result.affected === 0) {
             res.status(404).send('Product not found');
         } else {
             res.status(204).send();
