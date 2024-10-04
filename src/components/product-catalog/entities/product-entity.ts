@@ -1,4 +1,6 @@
-import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {BrandEntity} from "./brand-entity";
+import {CategoryEntity} from "./category-entity";
 
 @Entity({name: 'product'})
 class ProductEntity {
@@ -13,6 +15,14 @@ class ProductEntity {
 
     @Column({name:'product_price', type: 'numeric', precision: 10, scale: 2})
     price!: number;
+
+    @ManyToOne(() => CategoryEntity)
+    @JoinColumn({name: 'category_id'})
+    category!: CategoryEntity;
+
+    @ManyToOne(() => BrandEntity)
+    @JoinColumn({name: 'brand_id'})
+    brand!: BrandEntity;
 }
 
 export default ProductEntity;

@@ -23,6 +23,15 @@ describe('Product Persistence with TypeORM', () => {
             name: 'Laptop Y',
             description: 'High performance Laptop Y',
             price: 1299.99,
+            category: {
+                id: 1,
+                name: 'Electronics',
+                description: 'Devices and gadgets',
+                image: 'electronics.jpg',
+                parentCategory: null,
+                children: []
+            },
+            brand: {id: 1, name: 'Brand X', description: 'Brand X description'}
         };
     });
 

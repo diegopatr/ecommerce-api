@@ -5,7 +5,7 @@ Content-Type: application/json
 ###
 
 # Get a single product by ID
-GET localhost:3000/products/1
+GET localhost:3000/products/2
 Content-Type: application/json
 
 ###
@@ -44,5 +44,5 @@ Content-Type: application/json
 ###
 
 # Delete a product by ID
-DELETE localhost:3000/products/1
+DELETE localhost:3000/products/3
 Content-Type: application/json

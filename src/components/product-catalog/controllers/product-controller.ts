@@ -15,8 +15,20 @@ export class ProductController {
         res.status(200).json(products);
     };
 
+    getAllPaged = async (req: Request, res: Response): Promise<void> => {
+        const skip = parseInt(req.query.skip as string) || 0;
+        const take = parseInt(req.query.take as string) || 10;
+        const products = await this.productRepository.find({
+            skip,
+            take
+        });
+    };
+
     getById = async (req: Request, res: Response): Promise<void> => {
-        const product = await this.productRepository.findOneBy({id: parseInt(req.params.id)});
+        const product = await this.productRepository.findOne({
+            where: {id: parseInt(req.params.id)},
+            relations: ['category', 'brand']
+        });
         if (!product) {
             res.status(404).send('Product not found');
         } else {
@@ -31,7 +43,7 @@ export class ProductController {
 
     replace = async (req: Request, res: Response): Promise<void> => {
         const productId = parseInt(req.params.id);
-        const existingProduct = await this.productRepository.findOneBy({ id: productId });
+        const existingProduct = await this.productRepository.findOneBy({id: productId});
 
         if (!existingProduct) {
             // According to the HTTP specification (RFC 9110), the PUT method
@@ -44,7 +56,7 @@ export class ProductController {
             // resource to be updated does not exist.
             res.status(404).send('Product not found');
         } else {
-            const updatedProduct = this.productRepository.create({ ...existingProduct, ...req.body });
+            const updatedProduct = this.productRepository.create({...existingProduct, ...req.body});
             await this.productRepository.save(updatedProduct);
             res.status(200).json(updatedProduct);
         }
@@ -58,7 +70,7 @@ export class ProductController {
         if (result.affected === 0) {
             res.status(404).send('Product not found');
         } else {
-            const updatedProduct = await this.productRepository.findOneBy({ id: productId });
+            const updatedProduct = await this.productRepository.findOneBy({id: productId});
             res.status(200).json(updatedProduct);
         }
     };
